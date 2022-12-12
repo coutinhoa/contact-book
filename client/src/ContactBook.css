@@ -1,0 +1,54 @@
+.ContactBook {
+  text-align: center;
+  align-content: center;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+.contacts {
+  align-content: center;
+  margin: auto;
+}
+
+tr:hover td {
+  cursor: pointer;
+  color: blue;
+  box-shadow: 0px 9px 4px -6px grey;
+}
+
+.remove-cursor {
+  cursor: pointer;
+  text-decoration: none;
+  color: red;
+  display: flex;
+  justify-content: center;
+}
+
+.remove-cursor:hover {
+  text-decoration: none;
+  color: red;
+}
+
+.button {
+  margin: auto;
+  margin-top: 10px;
+  margin-right: 20px;
+  font-weight: bold;
+  background-color: rgba(0, 68, 255, 0.299);
+  border-color: transparent;
+  border-radius: 2px 2px 2px 2px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+
+.input {
+  border-style: hidden;
+}
+
+.input:active {
+  border-style: none;
+}
