@@ -1,4 +1,4 @@
-package com.example.contacts;
+package com.example.contacts.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,17 +8,18 @@ import java.util.Objects;
 
 
 @Entity
+public
 class Contact {
 
     private @Id
     @GeneratedValue Long id;
     private String name;
-    private int phone;
+    private String phone;
     private String email;
 
     Contact() {}
 
-    Contact(String name, int phone, String email) {
+    public Contact(String name, String phone, String email) {
 
         this.name = name;
         this.phone =phone;
@@ -33,7 +34,7 @@ class Contact {
         return this.name;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
@@ -49,7 +50,7 @@ class Contact {
         this.name = name;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone= phone;
     }
 

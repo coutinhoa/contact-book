@@ -52,3 +52,7 @@ tr:hover td {
 .input:active {
   border-style: none;
 }
+
+.moving-pages {
+  margin: 10px;
+}

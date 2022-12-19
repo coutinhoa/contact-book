@@ -1,58 +1,59 @@
-package com.example.contacts;
+package com.example.contacts.controllers;
 
 
 import java.util.List;
+
+import com.example.contacts.exceptions.ContactNotFoundException;
+import com.example.contacts.models.Contact;
+import com.example.contacts.services.ContactService;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @CrossOrigin(origins = "http://localhost:3000", methods={RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT,RequestMethod.DELETE})
 @RestController
 class ContactController {
 
-    private final ContactRepository repository;
-    ContactController(ContactRepository repository) {
-        this.repository = repository;
+    private final ContactService service;
+    ContactController(ContactService service) {
+        this.service = service;
     }
 
     @GetMapping("/contacts")
     List<Contact> all() {
-        return repository.findAll();
+        Page<Contact> contacts= service.getAllContacts(0,10);
+        return contacts.getContent();
     }
 
 
     @PostMapping("/contacts")
-    Contact newContact(@RequestBody Contact newContact) {
-
-        System.out.println("post");
-        return repository.save(newContact);
+    Contact newContact(@RequestBody Contact newContact){
+        try{
+            return service.createContact(newContact);
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
 
     @GetMapping("/contacts/{id}")
     Contact one(@PathVariable Long id) {
 
-        return repository.findById(id)
+        return service.getContact(id)
                 .orElseThrow(() -> new ContactNotFoundException(id));
     }
 
     @PutMapping("/contacts/{id}")
     Contact replaceContact(@RequestBody Contact newContact, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(contact -> {
-                    contact.setName(newContact.getName());
-                    contact.setPhone(newContact.getPhone());
-                    contact.setEmail(newContact.getEmail());
-                    return repository.save(contact);
-                })
-                .orElseGet(() -> {
-                    newContact.setId(id);
-                    return repository.save(newContact);
-                });
+        return service.updateContact(id, newContact);
     }
 
     @DeleteMapping("/contacts/{id}")
     void deleteContact(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteContact(id);
     }
 }

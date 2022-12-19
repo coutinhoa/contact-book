@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./EditContact.css";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 function EditContact() {
   const params = useParams();
@@ -35,7 +37,13 @@ function EditContact() {
         "Content-type": "application/json",
       },
       body: JSON.stringify({ name, phone, email }),
-    }).then(() => navigate("/"));
+    })
+      .then(() => navigate("/"))
+      .then(
+        toast.success("You edited a contact!", {
+          position: toast.POSITION.TOP_CENTER,
+        })
+      );
   };
 
   return (

@@ -1,8 +1,8 @@
-package com.example.contacts;
+package com.example.contacts.exceptions;
 
-class ContactNotFoundException extends RuntimeException {
+public class ContactNotFoundException extends RuntimeException {
 
-    ContactNotFoundException(Long id) {
+    public ContactNotFoundException(Long id) {
         super("Could not find contact " + id);
     }
 }

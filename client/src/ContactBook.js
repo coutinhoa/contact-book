@@ -1,6 +1,10 @@
 import "./ContactBook.css";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+
+//https://blog.logrocket.com/using-react-toastify-style-toast-messages/
 
 function App() {
   const [contacts, setContacts] = useState([]);
@@ -12,8 +16,8 @@ function App() {
   //useParams is no bueno cauyse we use useParams when we want something like this: localhost:3000/1
   //in this example useParams is useful when we want the page of a single user
 
-  const fetchContacts = () => {
-    fetch("http://localhost:4444/api/contacts")
+  const fetchContacts = (pageNumber = 0) => {
+    fetch(`http://localhost:4444/api/contacts?page=${pageNumber}`)
       .then((response) => response.json())
       .then((response) => {
         setContacts(response);
@@ -24,12 +28,19 @@ function App() {
     fetchContacts();
   }, []);
 
-  const deleteContact = (id) => {
-    console.log(id);
-    if (id) {
-      fetch(`http://localhost:4444/api/contacts/${id}`, {
+  const deleteContact = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:4444/api/contacts/${id}`, {
         method: "DELETE",
-      }).then(fetchContacts);
+      });
+      if (response.status === 200) {
+        toast.warning("You deleted a contact!", {
+          position: toast.POSITION.TOP_LEFT,
+        });
+      }
+      fetchContacts();
+    } catch (error) {
+      toast.error("Server disconnected");
     }
   };
 
@@ -49,8 +60,19 @@ function App() {
         email: email,
       }),
     })
-      .then(() => fetchContacts())
-      .then(setIsAdding(false));
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        if (response.status === 400) {
+          toast.error(response.message);
+        } else {
+          setIsAdding(false);
+          fetchContacts();
+          toast.success("You added a new contact!", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
+      });
   };
 
   return (
@@ -116,6 +138,7 @@ function App() {
                   type="text"
                   placeholder="Add name"
                   onChange={(event) => setName(event.target.value)}
+                  value={name}
                 />
               </td>
               <td>
@@ -130,9 +153,12 @@ function App() {
               <td>
                 <input
                   className="input"
-                  type="text"
+                  type="email"
+                  name="email"
+                  pattern=".+@email\.com"
                   placeholder="Add Email"
                   onChange={(event) => setEmail(event.target.value)}
+                  value={email}
                 />
               </td>
               <td>Delete</td>
@@ -156,6 +182,10 @@ function App() {
           </button>
         </div>
       )}
+      <div>
+        <button className="moving-pages">Previous</button>
+        <button className="moving-pages">Next</button>
+      </div>
     </div>
   );
 }
