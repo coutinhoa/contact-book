@@ -1,5 +1,5 @@
 import "./ContactBook.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -12,21 +12,46 @@ function App() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState(0);
   const [email, setEmail] = useState("");
+  const [counter, setCounter] = useState(1);
 
   //useParams is no bueno cauyse we use useParams when we want something like this: localhost:3000/1
   //in this example useParams is useful when we want the page of a single user
 
-  const fetchContacts = (pageNumber = 0) => {
-    fetch(`http://localhost:4444/api/contacts?page=${pageNumber}`)
-      .then((response) => response.json())
-      .then((response) => {
-        setContacts(response);
-      });
-  };
+  const fetchContacts = useCallback((pageNumber = 0, pageSize = 10) => {
+    if (moveForward) {
+      fetch(
+        `http://localhost:4444/api/contacts?page=${pageNumber}&pagesize=${pageSize}`
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          setContacts(response);
+        });
+    } else if (moveBackwards) {
+      fetch(
+        `http://localhost:4444/api/contacts?page=${pageNumber}&pagesize=${pageSize}`
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          setContacts(response);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     fetchContacts();
-  }, []);
+  }, [fetchContacts]);
+
+  const moveBackwards = () => {
+    console.log("you clicked previous");
+    setCounter((counter) => counter - 1);
+    console.log(counter);
+  };
+
+  const moveForward = () => {
+    console.log("you clicked next");
+    setCounter((counter) => counter + 1);
+    console.log(counter);
+  };
 
   const deleteContact = async (id) => {
     try {
@@ -183,8 +208,12 @@ function App() {
         </div>
       )}
       <div>
-        <button className="moving-pages">Previous</button>
-        <button className="moving-pages">Next</button>
+        <button className="moving-pages" onClick={moveBackwards}>
+          Previous
+        </button>
+        <button className="moving-pages" onClick={moveForward}>
+          Next
+        </button>
       </div>
     </div>
   );

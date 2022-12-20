@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.Optional;
 
 @Service
@@ -17,7 +19,7 @@ public class ContactService {
     }
 
 
-    public Page<Contact> getAllContacts(int page,int size){
+    public Page<Contact> getAllContacts(int page, int size){
         Pageable paging = PageRequest.of(page, size);
         return repository.findAll(paging);
     }

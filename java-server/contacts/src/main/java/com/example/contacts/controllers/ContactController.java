@@ -2,6 +2,7 @@ package com.example.contacts.controllers;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.contacts.exceptions.ContactNotFoundException;
 import com.example.contacts.models.Contact;
@@ -22,8 +23,9 @@ class ContactController {
     }
 
     @GetMapping("/contacts")
-    List<Contact> all() {
-        Page<Contact> contacts= service.getAllContacts(0,10);
+    List<Contact> all(@RequestParam (defaultValue="0") String pageNumber, @RequestParam(defaultValue = "10") String pageSize) {
+
+        Page<Contact> contacts= service.getAllContacts(Integer.parseInt(pageNumber),Integer.parseInt(pageSize));
         return contacts.getContent();
     }
 
