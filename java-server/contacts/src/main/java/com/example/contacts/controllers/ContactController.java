@@ -23,9 +23,9 @@ class ContactController {
     }
 
     @GetMapping("/contacts")
-    List<Contact> all(@RequestParam (defaultValue="0") String pageNumber, @RequestParam(defaultValue = "10") String pageSize) {
+    List<Contact> all(@RequestParam (defaultValue="0") String page, @RequestParam(defaultValue = "10") String pagesize) {
 
-        Page<Contact> contacts= service.getAllContacts(Integer.parseInt(pageNumber),Integer.parseInt(pageSize));
+        Page<Contact> contacts= service.getAllContacts(Integer.parseInt(page),Integer.parseInt(pagesize));
         return contacts.getContent();
     }
 
